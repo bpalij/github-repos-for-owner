@@ -2,7 +2,6 @@ const user = sessionStorage.getItem('githubNameSearch');
 if (!user) {
   window.location.href = 'index.html';  // redirecting back on error
 } else {
-  // console.log('start');
   function convertItemObjectToHtmlString(item){
     const html = 
       (`
@@ -70,7 +69,6 @@ if (!user) {
     } else {
       minStars = minStarsTemp;
       repoType = document.getElementById('type-select').value;
-      // console.log(repoType);
       sort = document.getElementById('sort-select').value;
       const show = 
         allReposLoaded
@@ -79,19 +77,16 @@ if (!user) {
           .sort(sortCallback)
           .map(convertItemObjectToHtmlString)
           .join('');
-      // console.log(show);
       document.getElementById('search-items').innerHTML = show;
       document.getElementById('filter-sort-button').removeAttribute('disabled');
       if (!disabledNextPage) {document.getElementById('nextPageLoad').removeAttribute('disabled')}
     }
   }
   function addPage(){
-    // const disabledNextPage=document.getElementById('nextPageLoad').disabled;
     document.getElementById('nextPageLoad').setAttribute("disabled","disabled");
     document.getElementById('filter-sort-button').setAttribute("disabled","disabled");
     fetch(`https://api.github.com/search/repositories?q=user:${user}&per_page=100&page=${++page}`)
       .then((res) => {
-        // console.log(res);
         if(res.ok){
           return res.json()
         } else {
@@ -99,14 +94,12 @@ if (!user) {
         }
       })
       .then((data) => {
-        // console.log(data);
         if(data.items.length===0){
           document.getElementById('nextPageLoad').text = 'End reached';
         } else {
           let lastPage=false;
           if(data.items.length<100) { lastPage=true }
           allReposLoaded = allReposLoaded.concat(data.items); //concat is faster than [ ...arr ] and is more semantical for code understanding
-          // console.log(convertItemObjectToHtmlString(allReposLoaded[0]));
           const show = 
             allReposLoaded
               .filter(filterStarsCallback)
@@ -114,7 +107,6 @@ if (!user) {
               .sort(sortCallback)
               .map(convertItemObjectToHtmlString)
               .join('');
-          // console.log(show);
           document.getElementById('search-items').innerHTML = show;
           document.getElementById('filter-sort-button').removeAttribute('disabled');
           if(lastPage){
@@ -122,25 +114,12 @@ if (!user) {
           }  else {
             document.getElementById('nextPageLoad').removeAttribute('disabled');
           }
-
-          // if (!disabledNextPage) {document.getElementById('nextPageLoad').removeAttribute('disabled')}
-
-          // const show = allReposLoaded.map(convertItemObjectToHtmlString).join('');
-          // // console.log(show);
-          // document.getElementById('search-items').innerHTML = show;
-          // document.getElementById('filter-sort-button').removeAttribute('disabled');
-          // if(lastPage){
-          //   document.getElementById('nextPageLoad').text = 'End reached'
-          // }  else {
-          //   document.getElementById('nextPageLoad').removeAttribute('disabled');
-          // }
         }
       })
       .catch(() => document.getElementById('nextPageLoad').text = 'Can not get more repos');
   }
   fetch(`https://api.github.com/search/repositories?q=user:${user}&per_page=100&page=${page}`) // 100 - maximum on page
     .then((res) => {
-      // console.log(res);
       if(res.ok){
         return res.json()
       } else {
@@ -148,16 +127,13 @@ if (!user) {
       }
     })
     .then((data) => {
-      // console.log(data);
       if(data.items.length===0){
         alert ('No repos found for owner! Go back and try again!');
       } else {
         let lastPage=false;
         if(data.items.length<100) { lastPage=true }
-        allReposLoaded = allReposLoaded.concat(data.items); //concat is faster than [ ...arr ] and is more semantical for code understanding
-        // console.log(convertItemObjectToHtmlString(allReposLoaded[0]));
+        allReposLoaded = allReposLoaded.concat(data.items); //concat is faster than [ ...arr ] and is more semantical for code understanding;
         const show = allReposLoaded.map(convertItemObjectToHtmlString).join('');
-        // console.log(show);
         document.getElementById('search-items').innerHTML = show;
         document.getElementById('filter-sort-button').removeAttribute('disabled');
         if(lastPage){
