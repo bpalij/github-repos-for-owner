@@ -1,0 +1,12 @@
+#search-items{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px 0;
+}
+.item{
+  border: 1px solid black;
+  width: 700px;
+  margin: 10px 0;
+  padding: 10px;
+}
