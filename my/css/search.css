@@ -12,9 +12,19 @@
 }
 .form{
   width: 700px;
+  margin: 10px auto;
+  border: 1px solid black;
 }
 #nextPageLoad{
   display: block;
   width: 710px;
   margin: 10px auto;
+}
+.w100p{
+  width: 100%;
+  display: block;
+}
+.vertical-margin{
+  margin-top: 10px;
+  margin-bottom: 10px;
 }

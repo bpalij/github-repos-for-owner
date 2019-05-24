@@ -20,6 +20,9 @@ if (!user) {
       return html;
   };
   let page = 1;
+  let minStars = '0';
+  let repoType = '';
+  let sort = '';
   let allReposLoaded = [];
   fetch(`https://api.github.com/search/repositories?q=user:${user}&per_page=100&page=${page}`) // 100 - maximum on page
   .then((res) => {
@@ -42,6 +45,7 @@ if (!user) {
       const show = allReposLoaded.map((x) => convertItemObjectToHtmlString(x)).join('');
       // console.log(show);
       document.getElementById('search-items').innerHTML = show;
+      document.getElementById('filter-sort-button').removeAttribute('disabled');
       if(lastPage){
         document.getElementById('nextPageLoad').text = 'End reached'
       }  else {

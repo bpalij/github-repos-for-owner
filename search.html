@@ -8,7 +8,41 @@
 <body>
   <main>
     <form class="form">
-
+      <div class="container">
+        <div class="row">
+          <div class="col-sm-4 vertical-margin">
+            <div><label for="star-field">Minimum stars</label></div>
+            <div class="w100p"><input type="text" class="form-control" name="stars" id="star-field" value="0"/></div>
+          </div>
+          <div class="col-sm-4 vertical-margin">
+            <div><label for="type-select">Type</label></div>
+            <div class="w100p">
+              <select name="types" class="form-control" id="type-select">
+                <option value="" selected>all</option>
+                <option value="fork">forks</option>
+                <option value="source">sources</option>
+              </select>
+            </div>
+          </div>
+          <div class="col-sm-4 vertical-margin">
+            <div><label for="sort-select">Sort</label></div>
+            <div class="w100p">
+              <select name="sort" class="form-control" id="sort-select">
+                <option value="" selected>none</option>
+                <option value="name-asc">name(asc)</option>
+                <option value="name-desc">name(desc)</option>
+                <option value="stars-desc">stars(desc)</option>
+                <option value="stars-asc">stars(asc)</option>
+                <!-- <option value="source">sources</option> -->
+              </select>
+            </div>
+          </div>
+          <div class="col-sm-8"></div>
+          <div class="col-sm-4 vertical-margin">
+            <button type="button" id="filter-sort-button" class="btn btn-primary w100p" onclick="filterSort()" disabled>Apply</button>
+          </div>
+        </div>
+      </div>
     </form>
     <div id="search-items">
 
