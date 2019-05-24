@@ -10,3 +10,11 @@
   margin: 10px 0;
   padding: 10px;
 }
+.form{
+  width: 700px;
+}
+#nextPageLoad{
+  display: block;
+  width: 722px;
+  margin: 10px auto;
+}

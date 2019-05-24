@@ -32,11 +32,22 @@ if (!user) {
   })
   .then((data) => {
     // console.log(data);
-    allReposLoaded = allReposLoaded.concat(data.items);
-    // console.log(convertItemObjectToHtmlString(allReposLoaded[0]));
-    const show = allReposLoaded.map((x) => convertItemObjectToHtmlString(x)).join('');
-    // console.log(show);
-    document.getElementById('search-items').innerHTML = show;
+    if(data.items.length===0){
+      alert ('No repos found for owner! Go back and try again!');
+    } else {
+      let lastPage=false;
+      if(data.items.length<100) { lastPage=true }
+      allReposLoaded = allReposLoaded.concat(data.items);
+      // console.log(convertItemObjectToHtmlString(allReposLoaded[0]));
+      const show = allReposLoaded.map((x) => convertItemObjectToHtmlString(x)).join('');
+      // console.log(show);
+      document.getElementById('search-items').innerHTML = show;
+      if(lastPage){
+        document.getElementById('nextPageLoad').text = 'End reached'
+      }  else {
+        document.getElementById('nextPageLoad').removeAttribute('disabled');
+      }
+    }
   })
   .catch(() => alert("Error happened! Go back and try again!"));
 }
