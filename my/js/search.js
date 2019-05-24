@@ -100,7 +100,7 @@ if (!user) {
     } else {
       let lastPage=false;
       if(data.items.length<100) { lastPage=true }
-      allReposLoaded = allReposLoaded.concat(data.items);
+      allReposLoaded = allReposLoaded.concat(data.items); //concat is faster than [ ...arr ] and is more semantical for code understanding
       // console.log(convertItemObjectToHtmlString(allReposLoaded[0]));
       const show = allReposLoaded.map(convertItemObjectToHtmlString).join('');
       // console.log(show);
