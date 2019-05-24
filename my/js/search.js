@@ -57,6 +57,7 @@ if (!user) {
     function checkNumber(val){
       return /^\d+$/.test(val);
     }
+    const disabledNextPage=document.getElementById('nextPageLoad').disabled;
     document.getElementById('nextPageLoad').setAttribute("disabled","disabled");
     document.getElementById('filter-sort-button').setAttribute("disabled","disabled");
     let minStarsTemp=document.getElementById('star-field').value;
@@ -64,7 +65,7 @@ if (!user) {
     if (!checkNumber(minStarsTemp)){
       alert('Min stars must contain only digits! Try again!');
       document.getElementById('filter-sort-button').removeAttribute('disabled');
-      document.getElementById('nextPageLoad').removeAttribute('disabled');
+      if (!disabledNextPage) {document.getElementById('nextPageLoad').removeAttribute('disabled')}
       return;
     } else {
       minStars = minStarsTemp;
@@ -81,8 +82,12 @@ if (!user) {
       // console.log(show);
       document.getElementById('search-items').innerHTML = show;
       document.getElementById('filter-sort-button').removeAttribute('disabled');
-      document.getElementById('nextPageLoad').removeAttribute('disabled');
+      if (!disabledNextPage) {document.getElementById('nextPageLoad').removeAttribute('disabled')}
     }
+  }
+  function addPage(){
+    document.getElementById('nextPageLoad').setAttribute("disabled","disabled");
+    document.getElementById('filter-sort-button').setAttribute("disabled","disabled");
   }
   fetch(`https://api.github.com/search/repositories?q=user:${user}&per_page=100&page=${page}`) // 100 - maximum on page
   .then((res) => {
