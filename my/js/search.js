@@ -86,37 +86,86 @@ if (!user) {
     }
   }
   function addPage(){
+    // const disabledNextPage=document.getElementById('nextPageLoad').disabled;
     document.getElementById('nextPageLoad').setAttribute("disabled","disabled");
     document.getElementById('filter-sort-button').setAttribute("disabled","disabled");
+    fetch(`https://api.github.com/search/repositories?q=user:${user}&per_page=100&page=${++page}`)
+      .then((res) => {
+        // console.log(res);
+        if(res.ok){
+          return res.json()
+        } else {
+          throw new Error(`Fetch error! ${res.status} ${res.statusText}`);
+        }
+      })
+      .then((data) => {
+        // console.log(data);
+        if(data.items.length===0){
+          document.getElementById('nextPageLoad').text = 'End reached';
+        } else {
+          let lastPage=false;
+          if(data.items.length<100) { lastPage=true }
+          allReposLoaded = allReposLoaded.concat(data.items); //concat is faster than [ ...arr ] and is more semantical for code understanding
+          // console.log(convertItemObjectToHtmlString(allReposLoaded[0]));
+          const show = 
+            allReposLoaded
+              .filter(filterStarsCallback)
+              .filter(filterTypeCallback)
+              .sort(sortCallback)
+              .map(convertItemObjectToHtmlString)
+              .join('');
+          // console.log(show);
+          document.getElementById('search-items').innerHTML = show;
+          document.getElementById('filter-sort-button').removeAttribute('disabled');
+          if(lastPage){
+            document.getElementById('nextPageLoad').text = 'End reached';
+          }  else {
+            document.getElementById('nextPageLoad').removeAttribute('disabled');
+          }
+
+          // if (!disabledNextPage) {document.getElementById('nextPageLoad').removeAttribute('disabled')}
+
+          // const show = allReposLoaded.map(convertItemObjectToHtmlString).join('');
+          // // console.log(show);
+          // document.getElementById('search-items').innerHTML = show;
+          // document.getElementById('filter-sort-button').removeAttribute('disabled');
+          // if(lastPage){
+          //   document.getElementById('nextPageLoad').text = 'End reached'
+          // }  else {
+          //   document.getElementById('nextPageLoad').removeAttribute('disabled');
+          // }
+        }
+      })
+      .catch(() => document.getElementById('nextPageLoad').text = 'Can not get more repos');
   }
   fetch(`https://api.github.com/search/repositories?q=user:${user}&per_page=100&page=${page}`) // 100 - maximum on page
-  .then((res) => {
-    // console.log(res);
-    if(res.ok){
-      return res.json()
-    } else {
-      throw new Error(`Fetch error! ${res.status} ${res.statusText}`);
-    }
-  })
-  .then((data) => {
-    // console.log(data);
-    if(data.items.length===0){
-      alert ('No repos found for owner! Go back and try again!');
-    } else {
-      let lastPage=false;
-      if(data.items.length<100) { lastPage=true }
-      allReposLoaded = allReposLoaded.concat(data.items); //concat is faster than [ ...arr ] and is more semantical for code understanding
-      // console.log(convertItemObjectToHtmlString(allReposLoaded[0]));
-      const show = allReposLoaded.map(convertItemObjectToHtmlString).join('');
-      // console.log(show);
-      document.getElementById('search-items').innerHTML = show;
-      document.getElementById('filter-sort-button').removeAttribute('disabled');
-      if(lastPage){
-        document.getElementById('nextPageLoad').text = 'End reached'
-      }  else {
-        document.getElementById('nextPageLoad').removeAttribute('disabled');
+    .then((res) => {
+      // console.log(res);
+      if(res.ok){
+        return res.json()
+      } else {
+        throw new Error(`Fetch error! ${res.status} ${res.statusText}`);
       }
-    }
-  })
-  .catch(() => alert("Error happened! Go back and try again!"));
+    })
+    .then((data) => {
+      // console.log(data);
+      if(data.items.length===0){
+        alert ('No repos found for owner! Go back and try again!');
+      } else {
+        let lastPage=false;
+        if(data.items.length<100) { lastPage=true }
+        allReposLoaded = allReposLoaded.concat(data.items); //concat is faster than [ ...arr ] and is more semantical for code understanding
+        // console.log(convertItemObjectToHtmlString(allReposLoaded[0]));
+        const show = allReposLoaded.map(convertItemObjectToHtmlString).join('');
+        // console.log(show);
+        document.getElementById('search-items').innerHTML = show;
+        document.getElementById('filter-sort-button').removeAttribute('disabled');
+        if(lastPage){
+          document.getElementById('nextPageLoad').text = 'End reached';
+        }  else {
+          document.getElementById('nextPageLoad').removeAttribute('disabled');
+        }
+      }
+    })
+    .catch(() => alert('Error happened! Go back and try again!'));
 }
