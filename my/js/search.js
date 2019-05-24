@@ -2,7 +2,7 @@ const user = sessionStorage.getItem('githubNameSearch');
 if (!user) {
   window.location.href = 'index.html';  // redirecting back on error
 } else {
-  console.log('start');
+  // console.log('start');
   function convertItemObjectToHtmlString(item){
     const html = 
       (`
@@ -24,6 +24,66 @@ if (!user) {
   let repoType = '';
   let sort = '';
   let allReposLoaded = [];
+  function filterStarsCallback(val) {
+    return val.stargazers_count >= minStars;
+  }
+  function filterTypeCallback(val) {
+    switch (repoType){
+      case 'fork':
+        return val.fork;
+      case 'source':
+        return !(val.fork);
+      default:
+        return true;
+    }
+  }
+  function sortCallback(a, b) {
+    switch (sort){
+      case 'name-asc':
+        if(a.name>b.name) {return 1}
+        if(a.name<b.name) {return -1}
+        return 0;
+      case 'name-desc':
+        if(a.name>b.name) {return -1}
+        if(a.name<b.name) {return 1}
+        return 0;
+      case 'stars-desc':
+        return -a.stargazers_count+b.stargazers_count;          
+      case 'stars-asc':
+        return a.stargazers_count-b.stargazers_count;          
+    }
+  }
+  function filterSort(){
+    function checkNumber(val){
+      return /^\d+$/.test(val);
+    }
+    document.getElementById('nextPageLoad').setAttribute("disabled","disabled");
+    document.getElementById('filter-sort-button').setAttribute("disabled","disabled");
+    let minStarsTemp=document.getElementById('star-field').value;
+    if (minStarsTemp==='') {minStarsTemp='0'}
+    if (!checkNumber(minStarsTemp)){
+      alert('Min stars must contain only digits! Try again!');
+      document.getElementById('filter-sort-button').removeAttribute('disabled');
+      document.getElementById('nextPageLoad').removeAttribute('disabled');
+      return;
+    } else {
+      minStars = minStarsTemp;
+      repoType = document.getElementById('type-select').value;
+      // console.log(repoType);
+      sort = document.getElementById('sort-select').value;
+      const show = 
+        allReposLoaded
+          .filter(filterStarsCallback)
+          .filter(filterTypeCallback)
+          .sort(sortCallback)
+          .map(convertItemObjectToHtmlString)
+          .join('');
+      // console.log(show);
+      document.getElementById('search-items').innerHTML = show;
+      document.getElementById('filter-sort-button').removeAttribute('disabled');
+      document.getElementById('nextPageLoad').removeAttribute('disabled');
+    }
+  }
   fetch(`https://api.github.com/search/repositories?q=user:${user}&per_page=100&page=${page}`) // 100 - maximum on page
   .then((res) => {
     // console.log(res);
@@ -42,7 +102,7 @@ if (!user) {
       if(data.items.length<100) { lastPage=true }
       allReposLoaded = allReposLoaded.concat(data.items);
       // console.log(convertItemObjectToHtmlString(allReposLoaded[0]));
-      const show = allReposLoaded.map((x) => convertItemObjectToHtmlString(x)).join('');
+      const show = allReposLoaded.map(convertItemObjectToHtmlString).join('');
       // console.log(show);
       document.getElementById('search-items').innerHTML = show;
       document.getElementById('filter-sort-button').removeAttribute('disabled');
